@@ -4,7 +4,8 @@
  
  ### 백엔드
  
- `sh\ncd backend
+ `sh
+ cd backend
  npm install
  npm start`
  
