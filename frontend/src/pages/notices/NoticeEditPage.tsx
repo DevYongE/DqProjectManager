@@ -13,8 +13,8 @@ export default function NoticeEditPage() {
   const fetchNotice = async () => {
     try {
       if (!noticeId) return;
-      const response = await axios.get(`/api/notices/${noticeId}`);
-      const notice = response.data;
+      const response = await axios.get(`http://localhost:5000/api/notices/${noticeId}`);
+      const notice = response.data.notice;
       setTitle(notice.title);
       setContent(notice.content);
     } catch (err: any) {
@@ -25,7 +25,6 @@ export default function NoticeEditPage() {
 
   useEffect(() => {
     fetchNotice();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [noticeId]);
 
   const handleUpdate = async (e: React.FormEvent) => {

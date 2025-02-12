@@ -18,28 +18,27 @@ export default function DashboardLayout() {
   };
 
   return (
-    <div className="flex min-h-screen">
+    <div className="min-h-screen flex">
       {/* 사이드바 영역 */}
-      <aside className="w-64 bg-gray-800 text-white p-6">
-        <h2 className="text-xl font-bold mb-4">메인</h2>
-        <nav className="space-y-2">
-          {/* 사이드바 메뉴 */}
-          <Link
-            to="/projects"
-            className="block px-3 py-2 rounded hover:bg-gray-700"
-          >
-            프로젝트 관리
-          </Link>
-          <Link
-            to="/notices"
-            className="block px-3 py-2 rounded hover:bg-gray-700"
-          >
-            공지사항
-          </Link>
-        </nav>
-
-        {/* 로그아웃 버튼 */}
-        <div className="mt-6">
+      <aside className="w-64 bg-gray-800 text-white flex flex-col fixed h-full">
+        <div className="p-6">
+          <h2 className="text-xl font-bold mb-4">메인</h2>
+          <nav className="space-y-2">
+            <Link
+              to="/projects"
+              className="block px-3 py-2 rounded hover:bg-gray-700"
+            >
+              프로젝트 관리
+            </Link>
+            <Link
+              to="/notices"
+              className="block px-3 py-2 rounded hover:bg-gray-700"
+            >
+              공지사항
+            </Link>
+          </nav>
+        </div>
+        <div className="mt-auto p-6">
           <button
             onClick={handleLogout}
             className="w-full px-3 py-2 rounded bg-red-500 hover:bg-red-600"
@@ -49,9 +48,11 @@ export default function DashboardLayout() {
         </div>
       </aside>
 
-      {/* 메인 컨텐츠 영역: 하위 라우트가 Outlet으로 표시됨 */}
-      <main className="flex-1 bg-gray-100 p-6 overflow-auto">
-        <Outlet />
+      {/* 메인 컨텐츠 영역 */}
+      <main className="flex-1 ml-64 bg-gray-100">
+        <div className="container mx-auto px-6 py-8 max-w-4xl">
+          <Outlet />
+        </div>
       </main>
     </div>
   );
