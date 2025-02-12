@@ -39,7 +39,7 @@ export default function LoginPage() {
         // 토큰 로컬 저장
         localStorage.setItem("token", response.data.token);
         // 페이지 이동
-        navigate("/dashboard");
+        navigate("/");
       } else {
         // status='error'인 경우, message를 표시
         setError(response.data.message || "로그인에 실패했습니다.");
