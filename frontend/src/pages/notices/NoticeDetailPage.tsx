@@ -1,4 +1,3 @@
-// src/pages/notices/NoticeDetailPage.tsx
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -20,7 +19,7 @@ export default function NoticeDetailPage() {
     try {
       if (!noticeId) return;
       const response = await axios.get(`http://localhost:5000/api/notices/${noticeId}`);
-      setNotice(response.data);
+      setNotice(response.data.notice); // notice = { id, title, content, ... }
     } catch (err: any) {
       console.error("공지사항 상세 조회 오류:", err);
       setError("공지사항을 불러오는 중 오류가 발생했습니다.");
@@ -35,7 +34,7 @@ export default function NoticeDetailPage() {
   const handleDelete = async () => {
     try {
       if (!noticeId) return;
-      await axios.delete(`/api/notices/${noticeId}`);
+      await axios.delete(`http://localhost:5000/api/notices/${noticeId}`);
       navigate("/notices");
     } catch (err: any) {
       console.error("공지사항 삭제 오류:", err);

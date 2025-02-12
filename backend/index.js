@@ -13,8 +13,8 @@ const PORT = process.env.PORT || 5000;
 
 // 미들웨어 설정
 app.use(cors());
-app.use(bodyParser.json());
-
+app.use(bodyParser.json());  // JSON 요청을 처리하도록 설정
+app.use(bodyParser.urlencoded({ extended: true }));
 // 라우트 설정
 app.use('/api/auth', authRoutes);
 app.use('/api/notices', noticeRoutes)

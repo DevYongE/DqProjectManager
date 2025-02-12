@@ -50,7 +50,7 @@ export default function DashboardLayout() {
       </aside>
 
       {/* 메인 컨텐츠 영역: 하위 라우트가 Outlet으로 표시됨 */}
-      <main className="flex-1 bg-gray-100 p-6">
+      <main className="flex-1 bg-gray-100 p-6 overflow-auto">
         <Outlet />
       </main>
     </div>

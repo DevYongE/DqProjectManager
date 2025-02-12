@@ -38,6 +38,7 @@ export default function LoginPage() {
       if (response.data.status === "success") {
         // 토큰 로컬 저장
         localStorage.setItem("token", response.data.token);
+        localStorage.setItem("userId", data.email);
         // 페이지 이동
         navigate("/");
       } else {

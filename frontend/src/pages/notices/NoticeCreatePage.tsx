@@ -12,7 +12,19 @@ export default function NoticeCreatePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5000/api/notices", { title, content });
+      const userId = localStorage.getItem("userId"); // ✅ 숫자로 변환
+      console.log(userId);
+      if (userId == null || userId == '' ) {
+        setError("로그인이 필요합니다.");
+        return;
+      }
+  
+      await axios.post("http://localhost:5000/api/notices", {
+        title,
+        content,
+        created_by: 4, // ✅ 올바른 ID 전달
+      });
+  
       navigate("/notices");
     } catch (err: any) {
       console.error("공지사항 생성 오류:", err);
