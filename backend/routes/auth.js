@@ -27,15 +27,15 @@ router.get('/db-test', async (req, res) => {
 
 // 회원가입 API
 router.post('/register', async (req, res) => {
-    const { email, password, name, birthDate, position, joinDate, team } = req.body;
+    const { email, password, name, birthDate, position, joinDate, team_name } = req.body;
     if (!email || !password || !name) {
         return res.status(400).json({ status: 'error', message: '필수 항목 누락' });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
     
     try {
-        const query = 'INSERT INTO users (email, password, name, birth_date, position, join_date, team) VALUES ($1, $2, $3, $4, $5, $6, $7)';
-        await pool.query(query, [email, hashedPassword, name, birthDate, position, joinDate, team]);
+        const query = 'INSERT INTO users (email, password, name, birth_date, position, join_date, team_name) VALUES ($1, $2, $3, $4, $5, $6, $7)';
+        await pool.query(query, [email, hashedPassword, name, birthDate, position, joinDate, team_name]);
         res.status(201).json({ status: 'success', message: '회원가입 성공' });
     } catch (err) {
         res.status(500).json({ status: 'error', message: '서버 오류', error: err.message });

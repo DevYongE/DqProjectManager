@@ -29,12 +29,27 @@ export default function LoginPage() {
   // 폼 제출 로직
   const onSubmit: SubmitHandler<LoginFormType> = async (data) => {
     try {
-      const response = await axios.post("/api/auth/login", data);
-      localStorage.setItem("token", response.data.token);
-      navigate("/dashboard");
-    } catch (err) {
+      const response = await axios.post("http://localhost:5000/api/auth/login", {
+        email: data.email,
+        password: data.password,
+      });
+
+      // 백엔드에서 status='success'와 token을 함께 보내준다고 가정
+      if (response.data.status === "success") {
+        // 토큰 로컬 저장
+        localStorage.setItem("token", response.data.token);
+        // 페이지 이동
+        navigate("/dashboard");
+      } else {
+        // status='error'인 경우, message를 표시
+        setError(response.data.message || "로그인에 실패했습니다.");
+      }
+    } catch (err: any) {
       console.error("로그인 오류:", err);
-      setError("로그인 실패. 이메일 또는 비밀번호를 확인하세요.");
+      // 서버에서 오는 에러 메시지가 있을 경우 사용, 없으면 기본 메시지
+      setError(
+        err.response?.data?.message || "로그인 실패. 이메일 또는 비밀번호를 확인하세요."
+      );
     }
   };
 
@@ -43,6 +58,7 @@ export default function LoginPage() {
       {/* 로그인 박스 */}
       <div className="w-full max-w-md bg-white rounded-md shadow-md p-8">
         <h2 className="text-2xl font-bold text-center mb-6">로그인</h2>
+
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

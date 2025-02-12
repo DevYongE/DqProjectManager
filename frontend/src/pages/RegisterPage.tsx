@@ -1,76 +1,58 @@
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { Input } from "../components/Input";
 import { Button } from "../components/Button";
 
-// ---------------------
-// 1) Zod 스키마 정의
-// ---------------------
+// 1) Zod 스키마에서 DB 컬럼명과 동일하게 snake_case 또는 그대로 사용
+//    position 은 예약어 이슈로 DB에서 "position"처럼 따옴표를 쓰는 경우가 있지만
+//    여기서는 key 값 그대로 position 사용.
 const registerSchema = z.object({
   email: z.string().email("유효한 이메일을 입력하세요."),
   password: z
     .string()
     .min(6, "비밀번호는 최소 6자 이상이어야 합니다.")
     .max(20, "비밀번호는 최대 20자 이하로 작성하세요."),
-  confirmPassword: z
-    .string()
-    .min(6, "비밀번호를 다시 입력하세요."), // 최소 길이만 단순 체크
-  
   name: z.string().nonempty("이름을 입력하세요."),
-  birthdate: z
-    .string()
-    .nonempty("생년월일을 입력하세요."), // 필요하면 .regex() 사용하여 형식 검증 가능
-  position: z.string().nonempty("직책을 입력하세요."),
-  join_date: z
-    .string()
-    .nonempty("입사일을 입력하세요."), // 필요하면 .regex() 사용하여 형식 검증 가능
-  team: z.string().nonempty("팀을 입력하세요."),
+  birthDate: z.string().nonempty("생년월일을 입력하세요."),
+  position: z.string().nonempty("직책(포지션)을 입력하세요."),
+  joinDate: z.string().nonempty("입사일을 입력하세요."),
+  team_name: z.string().nonempty("팀 이름을 입력하세요."),
 });
 
-// 2) 비밀번호와 비밀번호 확인이 일치하는지 refine 체크
-const enhancedRegisterSchema = registerSchema.refine(
-  (data) => data.password === data.confirmPassword,
-  {
-    message: "비밀번호가 일치하지 않습니다.",
-    path: ["confirmPassword"], // 여기 필드에 에러 메시지 표시
-  }
-);
-
-// 3) 스키마에서 타입 추출
-type RegisterFormType = z.infer<typeof enhancedRegisterSchema>;
+// 2) 스키마에서 타입 추출
+type RegisterFormType = z.infer<typeof registerSchema>;
 
 export default function RegisterPage() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  // 4) react-hook-form 설정
+  // 3) react-hook-form 설정
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<RegisterFormType>({
-    resolver: zodResolver(enhancedRegisterSchema),
+    resolver: zodResolver(registerSchema),
   });
 
-  // 5) 폼 전송 로직
+  // 4) 폼 전송 로직
   const onSubmit: SubmitHandler<RegisterFormType> = async (data) => {
     try {
-      // 회원가입 API 요청
-      // confirmPassword는 서버에 보낼 필요가 없으므로 제외
-      await axios.post("/api/auth/register", {
+      // 실제 API 경로와 맞춰서 수정 (예: localhost:5000 등)
+      await axios.post("http://localhost:5000/api/auth/register", {
         email: data.email,
         password: data.password,
         name: data.name,
-        birthdate: data.birthdate,
+        birthDate: data.birthDate,
         position: data.position,
-        join_date: data.join_date,
-        team: data.team,
+        joinDate: data.joinDate,
+        team_name: data.team_name,
       });
-      // 회원가입 성공 시 로그인 페이지(또는 원하는 라우트)로 이동
+      // 회원가입 성공 후 이동할 라우트
       navigate("/login");
     } catch (err) {
       console.error("회원가입 오류:", err);
@@ -101,14 +83,6 @@ export default function RegisterPage() {
             error={errors.password?.message}
           />
 
-          {/* 비밀번호 확인 */}
-          <Input
-            label="비밀번호 확인"
-            type="password"
-            {...register("confirmPassword")}
-            error={errors.confirmPassword?.message}
-          />
-
           {/* 이름 */}
           <Input
             label="이름"
@@ -117,15 +91,15 @@ export default function RegisterPage() {
             error={errors.name?.message}
           />
 
-          {/* 생년월일 */}
+          {/* 생년월일 (YYYY-MM-DD) */}
           <Input
             label="생년월일"
-            type="date" // 브라우저 기본 날짜 선택 UI 사용
-            {...register("birthdate")}
-            error={errors.birthdate?.message}
+            type="date"
+            {...register("birthDate")}
+            error={errors.birthDate?.message}
           />
 
-          {/* 직책 */}
+          {/* 직책(포지션) */}
           <Input
             label="직책"
             type="text"
@@ -133,20 +107,20 @@ export default function RegisterPage() {
             error={errors.position?.message}
           />
 
-          {/* 입사일 */}
+          {/* 입사일 (YYYY-MM-DD) */}
           <Input
             label="입사일"
             type="date"
-            {...register("join_date")}
-            error={errors.join_date?.message}
+            {...register("joinDate")}
+            error={errors.joinDate?.message}
           />
 
-          {/* 팀 */}
+          {/* 팀 이름 */}
           <Input
-            label="팀"
+            label="팀 이름"
             type="text"
-            {...register("team")}
-            error={errors.team?.message}
+            {...register("team_name")}
+            error={errors.team_name?.message}
           />
 
           <Button type="submit" className="w-full">
@@ -154,7 +128,7 @@ export default function RegisterPage() {
           </Button>
         </form>
 
-        {/* 이미 계정이 있는 경우 로그인 페이지 이동 링크 */}
+        {/* 이미 계정이 있는 경우 로그인 페이지로 이동 */}
         <div className="mt-6 text-center">
           <p className="text-gray-600">
             이미 계정이 있으신가요?{" "}
