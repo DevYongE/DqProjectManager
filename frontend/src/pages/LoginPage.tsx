@@ -36,9 +36,11 @@ export default function LoginPage() {
 
       // 백엔드에서 status='success'와 token을 함께 보내준다고 가정
       if (response.data.status === "success") {
-        // 토큰 로컬 저장
+        // 토큰 및 사용자 ID 저장
         localStorage.setItem("token", response.data.token);
-        localStorage.setItem("userId", data.email);
+        if (response.data.userId) {
+          localStorage.setItem("userId", String(response.data.userId));
+        }
         // 페이지 이동
         navigate("/");
       } else {

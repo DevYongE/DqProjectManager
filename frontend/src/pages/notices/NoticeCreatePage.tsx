@@ -12,17 +12,22 @@ export default function NoticeCreatePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const userId = localStorage.getItem("userId"); // ✅ 숫자로 변환
-      console.log(userId);
-      if (userId == null || userId == '' ) {
+      const userIdStr = localStorage.getItem("userId");
+      if (!userIdStr) {
         setError("로그인이 필요합니다.");
         return;
       }
-  
+
+      const userId = parseInt(userIdStr, 10);
+      if (isNaN(userId)) {
+        setError("잘못된 사용자 정보입니다.");
+        return;
+      }
+
       await axios.post("http://localhost:5000/api/notices", {
         title,
         content,
-        created_by: 4, // ✅ 올바른 ID 전달
+        created_by: userId,
       });
   
       navigate("/notices");
