@@ -59,7 +59,7 @@ router.post('/login', async (req, res) => {
         }
 
         const token = jwt.sign({ userId: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        res.json({ status: 'success', token });
+        res.json({ status: 'success', token, userId: user.id });
     } catch (err) {
         res.status(500).json({ status: 'error', message: '서버 오류', error: err.message });
     }
